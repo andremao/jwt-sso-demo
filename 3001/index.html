@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>3001</h1>
+    <!-- <iframe
+      src="http://localhost:3002"
+      frameborder="0"
+      style="display: none"
+      id="iframe"
+    ></iframe> -->
+
+    <button type="button" id="login">login</button>
+
+    <button type="button" id="profile">profile</button>
+
+    <script src="https://andremao.gitee.io/cdn/cross-local-storage.js"></script>
+
+    <script>
+      window.crossLocalStorage.setProviderOrigins('http://localhost:3002');
+
+      if (!window.localStorage.getItem('token')) {
+        window.crossLocalStorage
+          .getItem('http://localhost:3002', 'token')
+          .then((value) => {
+            console.log(value, 'hehe');
+            if (value) {
+              window.localStorage.setItem('token', value);
+            }
+          });
+      }
+
+      // (() => {
+      //   const iframe = document.createElement('iframe');
+      //   iframe.src = 'http://localhost:3002/';
+      //   iframe.style = 'width: 0; height: 0; position: absolute; left: -99px;';
+
+      //   // const iframe = document.querySelector('#iframe');
+
+      //   window.addEventListener('message', (e) => {
+      //     if (e.origin + '/' === iframe.src) {
+      //       switch (e.data.type) {
+      //         case 'getToken':
+      //           e.source.postMessage(
+      //             {
+      //               type: 'setToken',
+      //               token: window.localStorage.getItem('token'),
+      //             },
+      //             e.origin,
+      //           );
+      //           break;
+      //         case 'setToken':
+      //           window.localStorage.setItem('token', e.data.token);
+      //           break;
+      //       }
+      //     }
+      //   });
+
+      //   iframe.addEventListener('load', () => {
+      //     iframe.contentWindow.postMessage({ type: 'getToken' }, iframe.src);
+      //   });
+
+      //   document.body.appendChild(iframe);
+      // })();
+
+      (() => {
+        document.querySelector('#login').addEventListener('click', () => {
+          fetch('/login', {
+            method: 'post',
+            body: JSON.stringify({
+              uname: 'andremao',
+              upwd: 'qwe123',
+            }),
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              console.log(data);
+              localStorage.setItem('token', data.token);
+            });
+        });
+
+        document.querySelector('#profile').addEventListener('click', () => {
+          fetch('/profile', {
+            headers: {
+              Authorization: 'Bearer ' + localStorage.getItem('token'),
+            },
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              console.log(data);
+            });
+        });
+      })();
+    </script>
+  </body>
+</html>
