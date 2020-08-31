@@ -25,7 +25,7 @@ app.get('/', (req, res) => {
   res.sendFile(path.resolve(__dirname, './index.html'));
 });
 
-app.get('/cross-local-storage', (req, res) => {
+app.get('/cross-local-storage.html', (req, res) => {
   res.sendFile(path.resolve(__dirname, './cross-local-storage.html'));
 });
 

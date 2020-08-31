@@ -8,9 +8,8 @@
   <body>
     <script src="https://andremao.gitee.io/cdn/cross-local-storage.js"></script>
     <script>
-      (() => {
-        window.crossLocalStorage.setConsumerOrigins('http://localhost:3002');
-      })();
+      // 设置允许访问本域 LocalStorage 的域名清单，多个用逗号隔开
+      crossLocalStorage.setConsumerOrigins('http://localhost:3002');
     </script>
   </body>
 </html>

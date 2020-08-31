@@ -7,12 +7,6 @@
   </head>
   <body>
     <h1>3002</h1>
-    <!-- <iframe
-      src="http://localhost:3001"
-      frameborder="0"
-      style="display: none"
-      id="iframe"
-    ></iframe> -->
 
     <button type="button" id="login">login</button>
 
@@ -20,47 +14,24 @@
 
     <script src="https://andremao.gitee.io/cdn/cross-local-storage.js"></script>
     <script>
-      window.crossLocalStorage.setProviderOrigins('http://localhost:3001');
-
-      if (!window.localStorage.getItem('token')) {
-        window.crossLocalStorage
-          .getItem('http://localhost:3001', 'token')
-          .then((value) => {
-            console.log(value, 'hehe');
-            if (value) {
-              window.localStorage.setItem('token', value);
-            }
-          });
-      }
-
-      // (() => {
-      //   const iframe = document.querySelector('#iframe');
-
-      //   window.addEventListener('message', (e) => {
-      //     if (e.origin + '/' === iframe.src) {
-      //       switch (e.data.type) {
-      //         case 'getToken':
-      //           e.source.postMessage(
-      //             {
-      //               type: 'setToken',
-      //               token: window.localStorage.getItem('token'),
-      //             },
-      //             e.origin,
-      //           );
-      //           break;
-      //         case 'setToken':
-      //           window.localStorage.setItem('token', e.data.token);
-      //           break;
-      //       }
-      //     }
-      //   });
-
-      //   iframe.addEventListener('load', () => {
-      //     iframe.contentWindow.postMessage({ type: 'getToken' }, iframe.src);
-      //   });
-      // })();
-
       (() => {
+        // 设置要从哪些域获取 localStorage，多个用逗号隔开
+        // 这些域均需要有一个 /cross-local-storage.html 路由，响应一个 html 页面
+        // 并在页面中引入 https://andremao.gitee.io/cdn/cross-local-storage.js 脚本，然后调用 crossLocalStorage.setConsumerOrigins(...); 做支持
+        crossLocalStorage.setProviderOrigins('http://localhost:3001');
+
+        if (!localStorage.getItem('token')) {
+          crossLocalStorage
+            // 获取某域下的某个 localStorage Item，注意：域名必须在 setProviderOrigins 参数列表中
+            .getItem('http://localhost:3001', 'token')
+            .then((value) => {
+              console.log(value, 'hehe');
+              if (value) {
+                localStorage.setItem('token', value);
+              }
+            });
+        }
+
         document.querySelector('#login').addEventListener('click', () => {
           fetch('/login', {
             method: 'post',
